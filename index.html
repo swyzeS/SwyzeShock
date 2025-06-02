@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <link rel="stylesheet" href="styles.css" />
+
+  <meta charset="UTF-8" />
+  <title>ShoeStore</title>
+  <style>
+    /* Глобальні стилі */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+    
+    body {
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    /* Банер */
+    .banner-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    
+    .banner-image {
+      max-width: 80%;
+      max-height: 70vh;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    
+    .banner-image:hover {
+      transform: scale(0.95);
+    }
+    
+    .close-banner-btn {
+      margin-top: 30px;
+      padding: 10px 25px;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .close-banner-btn:hover {
+      background-color: #1a252f;
+    }
+    
+    /* Шапка */
+    header {
+      background-color: #2c3e50;
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 1rem;
+      transition: color 0.3s;
+    }
+    
+    nav a:hover {
+      color: #3498db;
+    }
+    
+    /* Language switcher */
+    .language-switcher {
+      margin-left: 1.5rem;
+      padding: 0.3rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      background-color: white;
+      color: #2c3e50;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    
+    /* Основний контент */
+    main {
+      padding: 2rem;
+      min-height: calc(100vh - 150px);
+    }
+    
+    /* Фільтри */
+    .filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .filters select {
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      background-color: white;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    
+    /* Список продуктів */
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+    
+    .product {
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+    }
+    
+    .product:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+  .product img {
+  width: 100%;
+  height: 200px;
+  object-fit: fill;
+  border-bottom: 1px solid #eee;
+}
+
+    
+    .product h3 {
+      padding: 0.8rem 1rem 0;
+      font-size: 1.1rem;
+    }
+    
+    .product p {
+      padding: 0.5rem 1rem;
+      color: #3498db;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    
+    .product .view-btn {
+      display: inline-block;
+      margin: 0 1rem 1rem;
+      color: #3498db;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    
+    .product button {
+      display: block;
+      width: calc(100% - 2rem);
+      margin: 0 1rem 1rem;
+      padding: 0.6rem;
+      background-color: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .product button:hover {
+      background-color: #1a252f;
+    }
+    
+    /* Підвал */
+    footer {
+      background-color: #2c3e50;
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+    
+    footer p {
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Адаптивність */
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+      }
+      
+      nav {
+        margin-top: 1rem;
+      }
+      
+      nav a {
+        margin: 0 0.5rem;
+      }
+      
+      .filters {
+        flex-direction: column;
+      }
+      
+      .banner-image {
+        max-width: 95%;
+      }
+    }
+
+    /* Адмін кнопки */
+    .admin-controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+      gap: 5px;
+    }
+
+    .admin-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: none;
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .edit-btn {
+      background-color: #3498db;
+    }
+
+    .delete-btn {
+      background-color: #e74c3c;
+    }
+
+    .add-product-btn {
+      margin-bottom: 2rem;
+      padding: 0.8rem 1.5rem;
+      background-color: #2ecc71;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .add-product-btn:hover {
+      background-color: #27ae60;
+    }
+
+    #banner {
+  display: none;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  margin-left: 1.5rem;
+  font-size: 1rem;
+  transition: color 0.3s;
+}
+
+
+  </style>
+</head>
+<body>
+  <!-- Банер, який показується при першому завантаженні -->
+  <div id="banner" class="banner-overlay">
+    <img src="images/baner.png" alt="Welcome Banner" class="banner-image">
+    <button class="close-banner-btn" id="closeBannerBtn">До головної</button>
+  </div>
+
+  <header>
+  <h1>SwyzeShock</h1>
+  <nav>
+    <a href="ProNas.html" id="about-link">Про нас</a>
+    <a href="login.html" id="login-link">Увійти</a>
+    <a href="cart.html" id="cart-link">Корзина (<span id="cart-count">0</span>)</a>
+    <select class="language-switcher" id="languageSwitcher">
+      <option value="uk">Українська</option>
+      <option value="en">English</option>
+    </select>
+  </nav>
+</header>
+
+
+  <main>
+    <div id="adminControls" style="display: none;">
+      <button class="add-product-btn" id="addProductBtn">Додати товар</button>
+    </div>
+
+    <section class="filters">
+      <select id="categoryFilter">
+        <option value="all" id="all-categories">Усі категорії</option>
+        <option value="Чоловіче" id="men-category">Чоловіче</option>
+        <option value="Жіноче" id="women-category">Жіноче</option>
+        <option value="Унісекс" id="unisex-category">Унісекс</option>
+      </select>
+
+      <select id="sortOrder">
+        <option value="default" id="sort-default">Сортувати</option>
+        <option value="priceAsc" id="price-asc">Ціна ↑</option>
+        <option value="priceDesc" id="price-desc">Ціна ↓</option>
+      </select>
+    </section>
+
+    <section id="productList" class="product-list"></section>
+  </main>
+
+  <footer>
+    <p id="footer-contact">SwyzeShock@gmail.com | +38 (093) 123-45-67</p>
+    <p id="footer-copyright">&copy; 2025 SwyzeShock</p>
+  </footer>
+
+ <script>
+  // Language translations
+  const translations = {
+    uk: {
+      home: "До головної",
+      about: "Про нас",
+      login: "Увійти",
+      logout: "Вийти",
+      cart: "Корзина",
+      allCategories: "Усі категорії",
+      men: "Чоловіче",
+      women: "Жіноче",
+      unisex: "Унісекс",
+      sort: "Сортувати",
+      priceAsc: "Ціна ↑",
+      priceDesc: "Ціна ↓",
+      details: "Деталі",
+      addToCart: "До кошика",
+      addProduct: "Додати товар",
+      edit: "✏️",
+      delete: "🗑️",
+      contact: "SwyzeShock@gmail.com | +38 (093) 123-45-67",
+      copyright: "&copy; 2025 SwyzeShock",
+      addedToCart: "Товар додано до кошика!",
+      confirmDelete: "Ви впевнені, що хочете видалити цей товар?",
+      newName: "Нова назва товару:",
+      newPrice: "Нова ціна:",
+      newCategory: "Нова категорія (Чоловіче/Жіноче/Унісекс):",
+      productName: "Назва товару:",
+      productPrice: "Ціна:",
+      productCategory: "Категорія (Чоловіче/Жіноче/Унісекс):"
+    },
+    en: {
+      home: "To main",
+      about: "About us",
+      login: "Login",
+      logout: "Logout",
+      cart: "Cart",
+      allCategories: "All categories",
+      men: "Men",
+      women: "Women",
+      unisex: "Unisex",
+      sort: "Sort by",
+      priceAsc: "Price ↑",
+      priceDesc: "Price ↓",
+      details: "Details",
+      addToCart: "Add to cart",
+      addProduct: "Add product",
+      edit: "✏️",
+      delete: "🗑️",
+      contact: "SwyzeShock@gmail.com | +38 (093) 123-45-67",
+      copyright: "&copy; 2025 SwyzeShock",
+      addedToCart: "Product added to cart!",
+      confirmDelete: "Are you sure you want to delete this product?",
+      newName: "New product name:",
+      newPrice: "New price:",
+      newCategory: "New category (Men/Women/Unisex):",
+      productName: "Product name:",
+      productPrice: "Price:",
+      productCategory: "Category (Men/Women/Unisex):"
+    }
+  };
+
+  // Set initial language
+  let currentLanguage = localStorage.getItem('language') || 'uk';
+  
+  // Function to update the UI with translations
+  function updateLanguage() {
+    const lang = translations[currentLanguage];
+    
+    // Update UI elements
+    document.getElementById('closeBannerBtn').textContent = lang.home;
+    document.getElementById('about-link').textContent = lang.about;
+    document.getElementById('login-link').textContent = currentUser ? lang.logout : lang.login;
+    document.getElementById('cart-link').innerHTML = `${lang.cart} (<span id="cart-count">0</span>)`;
+    document.getElementById('all-categories').textContent = lang.allCategories;
+    document.getElementById('men-category').textContent = lang.men;
+    document.getElementById('women-category').textContent = lang.women;
+    document.getElementById('unisex-category').textContent = lang.unisex;
+    document.getElementById('sort-default').textContent = lang.sort;
+    document.getElementById('price-asc').textContent = lang.priceAsc;
+    document.getElementById('price-desc').textContent = lang.priceDesc;
+    document.getElementById('addProductBtn').textContent = lang.addProduct;
+    document.getElementById('footer-contact').textContent = lang.contact;
+    document.getElementById('footer-copyright').innerHTML = lang.copyright;
+    
+    // Update product buttons (will be handled in renderProducts)
+    filterAndSortProducts();
+    
+    // Set language switcher value
+    document.getElementById('languageSwitcher').value = currentLanguage;
+  }
+
+  // Language switcher event
+  document.getElementById('languageSwitcher').addEventListener('change', function() {
+    currentLanguage = this.value;
+    localStorage.setItem('language', currentLanguage);
+    updateLanguage();
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const banner = document.getElementById('banner');
+    const closeBannerBtn = document.getElementById('closeBannerBtn');
+
+    // Перевірка, чи банер уже був закритий
+    const isBannerClosed = localStorage.getItem('bannerClosed') === 'true';
+
+    if (!isBannerClosed) {
+      // Якщо банер ще не закривали — показуємо його
+      banner.style.display = 'flex';
+    }
+
+    closeBannerBtn.addEventListener('click', function () {
+      banner.style.display = 'none';
+      localStorage.setItem('bannerClosed', 'true');
+    });
+    
+    // Initialize language
+    updateLanguage();
+  });
+</script>
+
+
+  <script>
+  // Отримуємо поточного користувача з localStorage
+  const currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+  const isAdmin = currentUser?.role === 'admin';
+
+  // Масив товарів (або отримуємо з localStorage)
+  let products = JSON.parse(localStorage.getItem('products')) || [
+    { id: 1, name: "Nike Air Max", price: 3000, category: "Чоловіче", image: "images/img1.jpg" },
+    { id: 4, name: "Reebok Runner", price: 2200, category: "Унісекс", image: "images/img4.jpg" },
+    { id: 5, name: "New Balance 574", price: 2700, category: "Жіноче", image: "images/img5.jpg" },
+    { id: 6, name: "Nike Blazer Mid", price: 3100, category: "Чоловіче", image: "images/img6.jpg" },
+    { id: 7, name: "Adidas NMD", price: 3400, category: "Унісекс", image: "images/img7.jpg" },
+    { id: 8, name: "Puma RS-X", price: 2600, category: "Жіноче", image: "images/img8.jpg" }
+  ];
+
+  // Оновлюємо localStorage
+  localStorage.setItem('products', JSON.stringify(products));
+
+  const productList = document.getElementById("productList");
+  const categoryFilter = document.getElementById("categoryFilter");
+  const sortOrder = document.getElementById("sortOrder");
+  const adminControls = document.getElementById("adminControls");
+  const addProductBtn = document.getElementById("addProductBtn");
+
+  // Показуємо адмін-панель, якщо користувач адмін
+  if (isAdmin) {
+    adminControls.style.display = 'block';
+    // Оновлюємо посилання в хедері
+    document.querySelector('nav a[href="login.html"]').textContent = translations[currentLanguage].logout;
+  }
+
+  function renderProducts(list) {
+    productList.innerHTML = "";
+    const lang = translations[currentLanguage];
+    
+    list.forEach(product => {
+      const card = document.createElement("div");
+      card.classList.add("product");
+
+      // Додаємо адмін-кнопки, якщо користувач адмін
+      const adminButtons = isAdmin ? `
+        <div class="admin-controls">
+          <button class="admin-btn edit-btn" onclick="editProduct(${product.id})">${lang.edit}</button>
+          <button class="admin-btn delete-btn" onclick="deleteProduct(${product.id})">${lang.delete}</button>
+        </div>
+      ` : '';
+
+      card.innerHTML = `
+        ${adminButtons}
+        <img src="${product.image}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>${product.price} грн</p>
+        <a href="product.html?id=${product.id}" class="view-btn">${lang.details}</a>
+        <button onclick="addToCart(${product.id})">${lang.addToCart}</button>
+      `;
+
+      productList.appendChild(card);
+    });
+  }
+
+  function filterAndSortProducts() {
+    let filtered = [...products];
+
+    const category = categoryFilter.value;
+    if (category !== "all") {
+      filtered = filtered.filter(p => p.category === category);
+    }
+
+    const sort = sortOrder.value;
+    if (sort === "priceAsc") {
+      filtered.sort((a, b) => a.price - b.price);
+    } else if (sort === "priceDesc") {
+      filtered.sort((a, b) => b.price - a.price);
+    }
+
+    renderProducts(filtered);
+  }
+
+  function addToCart(productId) {
+    const lang = translations[currentLanguage];
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.push(productId);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    alert(lang.addedToCart);
+  }
+
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    document.getElementById("cart-count").textContent = cart.length;
+  }
+
+  // Адмін-функції
+  function deleteProduct(id) {
+    const lang = translations[currentLanguage];
+    if (confirm(lang.confirmDelete)) {
+      products = products.filter(p => p.id !== id);
+      localStorage.setItem('products', JSON.stringify(products));
+      filterAndSortProducts();
+    }
+  }
+
+  function editProduct(id) {
+    const lang = translations[currentLanguage];
+    const product = products.find(p => p.id === id);
+    if (!product) return;
+
+    const newName = prompt(lang.newName, product.name);
+    if (newName === null) return;
+
+    const newPrice = prompt(lang.newPrice, product.price);
+    if (newPrice === null) return;
+
+    const newCategory = prompt(lang.newCategory, product.category);
+    if (newCategory === null) return;
+
+    product.name = newName;
+    product.price = parseInt(newPrice);
+    product.category = newCategory;
+
+    localStorage.setItem('products', JSON.stringify(products));
+    filterAndSortProducts();
+  }
+
+  addProductBtn.addEventListener('click', () => {
+    const lang = translations[currentLanguage];
+    const id = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+    const name = prompt(lang.productName);
+    if (!name) return;
+
+    const price = prompt(lang.productPrice);
+    if (!price) return;
+
+    const category = prompt(lang.productCategory);
+    if (!category) return;
+
+    const newProduct = {
+      id,
+      name,
+      price: parseInt(price),
+      category,
+      image: "images/shoe.jpg" // За замовчуванням
+    };
+
+    products.push(newProduct);
+    localStorage.setItem('products', JSON.stringify(products));
+    filterAndSortProducts();
+  });
+
+  // Події фільтра та сортування
+  categoryFilter.addEventListener("change", filterAndSortProducts);
+  sortOrder.addEventListener("change", filterAndSortProducts);
+
+  // Початкова ініціалізація
+  document.addEventListener("DOMContentLoaded", () => {
+    renderProducts(products);
+    updateCartCount();
+  });
+  </script>
+</body>
+</html>
